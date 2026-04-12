@@ -1,27 +1,46 @@
+from collections import deque
+
 def monkey_banana():
-    monkey = "A"
-    box = "B"
-    banana = "C"
-    on_box = False
 
-    print("Initial State:")
-    print(monkey, box, on_box)
+    monkey = "door"
+    box = "window"
+    banana = "middle"
 
-    # Step 1: Move monkey to box
-    monkey = box
-    print("Monkey moves to box:", monkey)
+    start = (monkey, box, False, False)  
+    # (monkey_pos, box_pos, on_box, has_banana)
 
-    # Step 2: Push box to banana
-    box = banana
-    monkey = banana
-    print("Monkey pushes box to banana:", box)
+    queue = deque([start])
+    visited = set([start])
 
-    # Step 3: Climb box
-    on_box = True
-    print("Monkey climbs box")
+    while queue:
+        monkey, box, on_box, has_banana = queue.popleft()
 
-    # Step 4: Grab banana
-    if on_box and monkey == banana:
-        print("Monkey grabs banana 🍌")
+        print("State:", (monkey, box, on_box, has_banana))
+
+        # Goal
+        if has_banana:
+            print("Goal Achieved!")
+            return
+
+        # Step 1: Move to box
+        if monkey != box:
+            new_state = (box, box, False, has_banana)
+
+        # Step 2: Push box under banana
+        elif box != banana and not on_box:
+            new_state = (banana, banana, False, has_banana)
+
+        # Step 3: Climb box
+        elif not on_box:
+            new_state = (monkey, box, True, has_banana)
+
+        # Step 4: Grab banana
+        else:
+            new_state = (monkey, box, True, True)
+
+        if new_state not in visited:
+            queue.append(new_state)
+            visited.add(new_state)
+
 
 monkey_banana()
