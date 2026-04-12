@@ -1,33 +1,49 @@
 from collections import deque
 
-def water_jug(j1, j2, target):
+def water_jug_bfs(jug_a_cap, jug_b_cap, target):
+    # Start state: both jugs empty
+    start = (0, 0)
+    
+    # Queue for BFS: stores (current_state, path_taken)
+    queue = deque()
+    queue.append((start, [start]))
+    
+    # Visited set to avoid repeating states
     visited = set()
-    queue = deque([(0, 0, [])])
-
+    visited.add(start)
+    
+    print(f"Jugs: A={jug_a_cap}L, B={jug_b_cap}L | Target: {target}L\n")
+    
     while queue:
-        a, b, path = queue.popleft()
-        if (a, b) in visited:
-            continue
-        visited.add((a, b))
-        path = path + [(a, b)]
-
+        (a, b), path = queue.popleft()
+        
+        # Check if goal is reached
         if a == target or b == target:
-            for i, step in enumerate(path):
-                print(f"Step {i}: Jug1={step[0]}L, Jug2={step[1]}L")
-            return
+            print("✅ Goal Reached!")
+            print("\nStep-by-step Path:")
+            for step, state in enumerate(path):
+                print(f"  Step {step}: Jug A = {state[0]}L, Jug B = {state[1]}L")
+            return path
+        
+        # Generate all possible next states
+        next_states = [
+            (jug_a_cap, b),           # Fill A
+            (a, jug_b_cap),           # Fill B
+            (0, b),                   # Empty A
+            (a, 0),                   # Empty B
+            # Pour A → B
+            (a - min(a, jug_b_cap - b), b + min(a, jug_b_cap - b)),
+            # Pour B → A
+            (a + min(b, jug_a_cap - a), b - min(b, jug_a_cap - a)),
+        ]
+        
+        for state in next_states:
+            if state not in visited:
+                visited.add(state)
+                queue.append((state, path + [state]))
+    
+    print("❌ No solution found.")
+    return None
 
-        for na, nb in [
-            (j1, b), (a, j2),             # Fill8
-            (0, b),  (a, 0),              # Empty
-            (a - min(a, j2-b), b + min(a, j2-b)),  # Pour 1→2
-            (a + min(b, j1-a), b - min(b, j1-a)),  # Pour 2→1
-        ]:
-            if (na, nb) not in visited:
-                queue.append((na, nb, path))
-
-    print("Not possible.")
-
-j1 = int(input("Jug1 capacity: "))
-j2 = int(input("Jug2 capacity: "))
-t  = int(input("Target: "))
-water_jug(j1, j2, t)
+# Run the program
+water_jug_bfs(4, 3, 2)
