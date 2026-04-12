@@ -1,31 +1,55 @@
 def tic_tac_toe():
     board = [" "] * 9
 
-    def print_board(board):
-        for i in range(0, 9, 3):
-            print(f" {board[i]} | {board[i+1]} | {board[i+2]} ")
-            if i < 6:
-                print("---+---+---")
+    def print_board():
+        print(board[0], "|", board[1], "|", board[2])
+        print("--+---+--")
+        print(board[3], "|", board[4], "|", board[5])
+        print("--+---+--")
+        print(board[6], "|", board[7], "|", board[8])
 
     def check_winner(p):
-        wins = [(0,1,2),(3,4,5),(6,7,8),
-                (0,3,6),(1,4,7),(2,5,8),
-                (0,4,8),(2,4,6)]
-        return any(board[a]==board[b]==board[c]==p for a,b,c in wins)
+        return (
+            (board[0]==board[1]==board[2]==p) or
+            (board[3]==board[4]==board[5]==p) or
+            (board[6]==board[7]==board[8]==p) or
+            (board[0]==board[3]==board[6]==p) or
+            (board[1]==board[4]==board[7]==p) or
+            (board[2]==board[5]==board[8]==p) or
+            (board[0]==board[4]==board[8]==p) or
+            (board[2]==board[4]==board[6]==p)
+        )
 
     player = "X"
+
     for i in range(9):
-        print_board(board)
-        move = int(input(f"{player} move (0-8): "))
-        if board[move] == " ":
-            board[move] = player
-            if check_winner(player):
-                print_board(board)
-                print(player, "wins!")
-                return
-            player = "O" if player=="X" else "X"
+        print_board()
+
+        move = int(input(player + " move (0-8): "))
+
+        if move < 0 or move > 8:
+            print("Enter number between 0 and 8 only")
+            continue
+
+        if board[move] != " ":
+            print("Already filled, try again")
+            continue
+
+        board[move] = player
+
+        if check_winner(player):
+            print_board()
+            print(player, "wins!")
+            return
+
+        # switch player
+        if player == "X":
+            player = "O"
         else:
-            print("Invalid move")
+            player = "X"
+
+    print_board()
     print("Draw!")
+
 
 tic_tac_toe()
