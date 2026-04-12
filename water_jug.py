@@ -19,7 +19,7 @@ def water_jug_bfs(jug_a_cap, jug_b_cap, target):
         
         # Check if goal is reached
         if a == target or b == target:
-            print("✅ Goal Reached!")
+            print("Goal Reached!")
             print("\nStep-by-step Path:")
             for step, state in enumerate(path):
                 print(f"  Step {step}: Jug A = {state[0]}L, Jug B = {state[1]}L")
@@ -42,7 +42,7 @@ def water_jug_bfs(jug_a_cap, jug_b_cap, target):
                 visited.add(state)
                 queue.append((state, path + [state]))
     
-    print("❌ No solution found.")
+    print(" No solution found.")
     return None
 
 # Run the program
