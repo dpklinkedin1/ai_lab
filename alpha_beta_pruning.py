@@ -1,36 +1,37 @@
-def alphabeta(depth, node_index, isMax, values, alpha, beta):
-
-    if depth == 3:
-        return values[node_index]
-
-    if isMax:
+def minimax(node, depth, alpha, beta, is_maximizing, tree):
+    if node not in tree:
+        return node
+    children = tree[node]
+    if is_maximizing:
         best = -1000
-
-        for i in range(2):
-            val = alphabeta(depth+1, node_index*2 + i, False, values, alpha, beta)
-            best = max(best, val)
+        for child in children:
+            score = minimax(child, depth+1, alpha, beta, False, tree)
+            best = max(best, score)
             alpha = max(alpha, best)
-
             if beta <= alpha:
-                break   # PRUNING
-
+                print(f"Pruned at node {child}!")
+                break
         return best
-
     else:
         best = 1000
-
-        for i in range(2):
-            val = alphabeta(depth+1, node_index*2 + i, True, values, alpha, beta)
-            best = min(best, val)
+        for child in children:
+            score = minimax(child, depth+1, alpha, beta, True, tree)
+            best = min(best, score)
             beta = min(beta, best)
-
             if beta <= alpha:
-                break   # PRUNING
-
+                print(f"Pruned at node {child}!")
+                break
         return best
 
+tree = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F', 'G'],
+    'D': [3, 5],
+    'E': [2, 9],
+    'F': [1, 7],
+    'G': [4, 6]
+}
 
-values = [3, 5, 6, 9, 1, 2, 0, -1]
-
-result = alphabeta(0, 0, True, values, -1000, 1000)
-print("Optimal value:", result)
+result = minimax('A', 0, -1000, 1000, True, tree)
+print(f"Best score: {result}")
