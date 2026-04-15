@@ -1,3 +1,7 @@
+
+#youtube link to understandn the code:https://youtu.be/l-hh51ncgDI
+
+
 def minimax(node, depth, alpha, beta, is_maximizing, tree):
     if node not in tree:
         return node
